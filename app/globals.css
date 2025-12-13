@@ -1,0 +1,28 @@
+/* app/globals.css */
+@layer base, components, utilities;
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* ADD THESE LINES FOR DARK MODE */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  /* CHANGE THESE LINES */
+  background: var(--background);  /* NOT 'white' */
+  color: var(--foreground);       /* NOT '#171717' */
+}
