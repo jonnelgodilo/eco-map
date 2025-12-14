@@ -7,7 +7,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { 
-  MapPin, LogOut, User, Globe, Home, PlusCircle, BarChart3, Calendar, Mail
+  MapPin, LogOut, User, Globe, Home, PlusCircle, Calendar, Mail
 } from "lucide-react";
 import Link from "next/link";
 
@@ -29,9 +29,6 @@ export default function ProfilePage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [stats, setStats] = useState({
     totalPins: 0,
-    recyclingPins: 0,
-    greenSpacePins: 0,
-    transportPins: 0,
     lastPinDate: null as string | null,
   });
   const router = useRouter();
@@ -59,9 +56,6 @@ export default function ProfilePage() {
       const querySnapshot = await getDocs(pinsQuery);
       
       const pins: UserPin[] = [];
-      let recyclingCount = 0;
-      let greenSpaceCount = 0;
-      let transportCount = 0;
       let lastDate: string | null = null;
 
       querySnapshot.forEach((doc) => {
@@ -77,11 +71,6 @@ export default function ProfilePage() {
         };
         
         pins.push(pinData);
-
-        // Count categories
-        if (data.category === 'recycling') recyclingCount++;
-        if (data.category === 'green_space') greenSpaceCount++;
-        if (data.category === 'transport') transportCount++;
         
         // Find latest pin
         if (!lastDate || data.createdAt > lastDate) {
@@ -95,9 +84,6 @@ export default function ProfilePage() {
       setUserPins(pins);
       setStats({
         totalPins: pins.length,
-        recyclingPins: recyclingCount,
-        greenSpacePins: greenSpaceCount,
-        transportPins: transportCount,
         lastPinDate: lastDate,
       });
     } catch (error) {
@@ -116,16 +102,10 @@ export default function ProfilePage() {
       setUserPins(prev => prev.filter(pin => pin.id !== pinId));
       
       // Update stats
-      const deletedPin = userPins.find(p => p.id === pinId);
-      if (deletedPin) {
-        setStats(prev => ({
-          ...prev,
-          totalPins: prev.totalPins - 1,
-          recyclingPins: deletedPin.category === 'recycling' ? prev.recyclingPins - 1 : prev.recyclingPins,
-          greenSpacePins: deletedPin.category === 'green_space' ? prev.greenSpacePins - 1 : prev.greenSpacePins,
-          transportPins: deletedPin.category === 'transport' ? prev.transportPins - 1 : prev.transportPins,
-        }));
-      }
+      setStats(prev => ({
+        ...prev,
+        totalPins: prev.totalPins - 1,
+      }));
       
       alert("Pin deleted successfully!");
     } catch (error) {
@@ -150,35 +130,69 @@ export default function ProfilePage() {
   };
 
   const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "recycling": return "♻️";
-      case "green_space": return "🌳";
-      case "transport": return "🚲";
-      case "water": return "💧";
-      case "cleanup": return "🧹";
-      default: return "📍";
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+      return "♻️";
+    } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+      return "🌳";
+    } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+      return "🚲";
+    } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+      return "💧";
+    } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+      return "🚸";
+    } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+      return "🗑️";
+    } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+      return "🧹";
+    } else {
+      return "📍";
     }
   };
 
   const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "recycling": return "bg-green-100 text-green-800";
-      case "green_space": return "bg-emerald-100 text-emerald-800";
-      case "transport": return "bg-blue-100 text-blue-800";
-      case "water": return "bg-cyan-100 text-cyan-800";
-      case "cleanup": return "bg-orange-100 text-orange-800";
-      default: return "bg-gray-100 text-gray-800";
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+      return "bg-green-100 text-green-800";
+    } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+      return "bg-emerald-100 text-emerald-800";
+    } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+      return "bg-blue-100 text-blue-800";
+    } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+      return "bg-cyan-100 text-cyan-800";
+    } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+      return "bg-orange-100 text-orange-800";
+    } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+      return "bg-purple-100 text-purple-800";
+    } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+      return "bg-orange-100 text-orange-800";
+    } else {
+      return "bg-gray-100 text-gray-800";
     }
   };
 
   const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case "recycling": return "Recycling";
-      case "green_space": return "Green Space";
-      case "transport": return "Transport";
-      case "water": return "Water";
-      case "cleanup": return "Clean-up";
-      default: return "Other";
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+      return "Recycling Center";
+    } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+      return "Green Space/Park";
+    } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+      return "Sustainable Transport";
+    } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+      return "Water Station";
+    } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+      return "Pedestrian Lane";
+    } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+      return "Waste Segregation Bins";
+    } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+      return "Clean-up Area";
+    } else {
+      // For user-specified categories, return as-is
+      return category;
     }
   };
 
@@ -213,42 +227,42 @@ export default function ProfilePage() {
             </div>
 
             {/* Navigation Links - Desktop */}
-<div className="hidden md:flex items-center space-x-6">
-  <Link
-    href="/dashboard"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <Home className="w-4 h-4 mr-1" />
-    Dashboard
-  </Link>
-  <Link
-    href="/map"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <Globe className="w-4 h-4 mr-1" />
-    Map
-  </Link>
-  <Link
-    href="/add-pin"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <PlusCircle className="w-4 h-4 mr-1" />
-    Add Pin
-  </Link>
-  <Link
-    href="/profile"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <User className="w-4 h-4 mr-1" />
-    Profile
-  </Link>
-</div>
+            <div className="hidden md:flex items-center space-x-6">
+              <Link
+                href="/dashboard"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <Home className="w-4 h-4 mr-1" />
+                Dashboard
+              </Link>
+              <Link
+                href="/map"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <Globe className="w-4 h-4 mr-1" />
+                Map
+              </Link>
+              <Link
+                href="/add-pin"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <PlusCircle className="w-4 h-4 mr-1" />
+                Add Pin
+              </Link>
+              <Link
+                href="/profile"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <User className="w-4 h-4 mr-1" />
+                Profile
+              </Link>
+            </div>
 
-            {/* User Info - Same as Dashboard */}
+            {/* User Info - Simple */}
             <div className="flex items-center space-x-4">
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-medium text-gray-700">{user?.email?.split('@')[0] || "User"}</p>
-                <p className="text-xs text-gray-500">{stats.totalPins} contributions</p>
+                <p className="text-xs text-gray-500">{userPins.length} pins</p>
               </div>
               
               {/* Profile Avatar - Circle shape */}
@@ -327,7 +341,7 @@ export default function ProfilePage() {
               </div>
             </div>
             
-            {/* Profile Info */}
+            {/* Profile Info - Simple version */}
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center">
                 <Calendar className="w-5 h-5 text-gray-400 mr-3" />
@@ -345,62 +359,11 @@ export default function ProfilePage() {
               </div>
               
               <div className="flex items-center">
-                <Mail className="w-5 h-5 text-gray-400 mr-3" />
+                <MapPin className="w-5 h-5 text-gray-400 mr-3" />
                 <div>
                   <p className="text-sm text-gray-600">Contributions</p>
                   <p className="font-medium text-gray-900">{stats.totalPins} pins</p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Statistics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white border rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-blue-50 rounded-md mr-3">
-                <MapPin className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalPins}</p>
-                <p className="text-sm text-gray-600">Total Points</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white border rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-green-50 rounded-md mr-3">
-                <span className="text-lg">♻️</span>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.recyclingPins}</p>
-                <p className="text-sm text-gray-600">Recycling</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white border rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-emerald-50 rounded-md mr-3">
-                <span className="text-lg">🌳</span>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.greenSpacePins}</p>
-                <p className="text-sm text-gray-600">Green Spaces</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white border rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-purple-50 rounded-md mr-3">
-                <BarChart3 className="w-5 h-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.transportPins}</p>
-                <p className="text-sm text-gray-600">Transport</p>
               </div>
             </div>
           </div>

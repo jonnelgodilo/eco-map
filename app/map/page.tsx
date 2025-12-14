@@ -108,13 +108,14 @@ export default function MapPage() {
   });
 
   const categories = [
-    { value: "all", label: "All", icon: "📍", color: "bg-gray-500", name: "All Locations" },
-    { value: "recycling", label: "Recycling", icon: "♻️", color: "bg-green-500", name: "Recycling Centers" },
-    { value: "green_space", label: "Green", icon: "🌳", color: "bg-emerald-500", name: "Green Spaces" },
-    { value: "transport", label: "Transport", icon: "🚲", color: "bg-blue-500", name: "Sustainable Transport" },
-    { value: "water", label: "Water", icon: "💧", color: "bg-cyan-500", name: "Water Stations" },
-    { value: "cleanup", label: "Clean-up", icon: "🧹", color: "bg-orange-500", name: "Clean-up Areas" },
-  ];
+  { value: "all", label: "All", icon: "📍", color: "bg-gray-500", name: "All Locations" },
+  { value: "♻️ Recycling Center", label: "Recycling", icon: "♻️", color: "bg-green-500", name: "Recycling Centers" },
+  { value: "🌳 Green Space/Park", label: "Green", icon: "🌳", color: "bg-emerald-500", name: "Green Spaces" },
+  { value: "🚲 Sustainable Transport", label: "Transport", icon: "🚲", color: "bg-blue-500", name: "Sustainable Transport" },
+  { value: "💧 Water Station", label: "Water", icon: "💧", color: "bg-cyan-500", name: "Water Stations" },
+  { value: "🚸 Pedestrian Lane", label: "Pedestrian", icon: "🚸", color: "bg-orange-500", name: "Pedestrian Lanes" },
+  { value: "🗑️ Waste Segregation Bins", label: "Waste", icon: "🗑️", color: "bg-purple-500", name: "Waste Segregation" },
+];
 
   const getCategoryInfo = (value: string) => {
     return categories.find(cat => cat.value === value) || categories[0];

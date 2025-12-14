@@ -136,28 +136,50 @@ export default function OpenStreetMap({ pins, height = "100%", isGuest = false }
   };
 
   // Get pin color
-  const getPinColor = (category: string) => {
-    switch (category) {
-      case "recycling": return "#10B981";
-      case "green_space": return "#059669";
-      case "transport": return "#3B82F6";
-      case "water": return "#06B6D4";
-      case "cleanup": return "#F97316";
-      default: return "#6B7280";
-    }
-  };
+const getPinColor = (category: string) => {
+  const categoryLower = category.toLowerCase();
+  
+  if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+    return "#10B981"; // green
+  } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+    return "#059669"; // emerald
+  } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+    return "#3B82F6"; // blue
+  } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+    return "#06B6D4"; // cyan
+  } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+    return "#F97316"; // orange
+  } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+    return "#8B5CF6"; // purple
+  } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+    return "#F97316"; // orange
+  } else {
+    return "#6B7280"; // gray
+  }
+};
 
   // Get pin emoji
-  const getPinEmoji = (category: string) => {
-    switch (category) {
-      case 'recycling': return '♻️';
-      case 'green_space': return '🌳';
-      case 'transport': return '🚲';
-      case 'water': return '💧';
-      case 'cleanup': return '🧹';
-      default: return '📍';
-    }
-  };
+const getPinEmoji = (category: string) => {
+  const categoryLower = category.toLowerCase();
+  
+  if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+    return '♻️';
+  } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+    return '🌳';
+  } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+    return '🚲';
+  } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+    return '💧';
+  } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+    return '🚸';
+  } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+    return '🗑️';
+  } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+    return '🧹';
+  } else {
+    return '📍';
+  }
+};
 
   // Get pin icon - FIXED TYPE
   const getPinIcon = (category: string): L.DivIcon => {
@@ -188,15 +210,27 @@ export default function OpenStreetMap({ pins, height = "100%", isGuest = false }
   };
 
   const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case "recycling": return "Recycling Center";
-      case "green_space": return "Green Space/Park";
-      case "transport": return "Sustainable Transport";
-      case "water": return "Water Station";
-      case "cleanup": return "Clean-up Area";
-      default: return "Other";
-    }
-  };
+  const categoryLower = category.toLowerCase();
+  
+  if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+    return "Recycling Center";
+  } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+    return "Green Space/Park";
+  } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+    return "Sustainable Transport";
+  } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+    return "Water Station";
+  } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+    return "Pedestrian Lane";
+  } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+    return "Waste Segregation Bins";
+  } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+    return "Clean-up Area";
+  } else {
+    // For user-specified categories, return as-is
+    return category;
+  }
+};
 
   // Create popup content - MODIFIED FOR GUEST MODE
   const createPopupContent = (pin: Pin) => {

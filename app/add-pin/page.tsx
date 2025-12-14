@@ -32,6 +32,7 @@ export default function AddPinPage() {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [compressing, setCompressing] = useState(false);
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -109,6 +110,67 @@ export default function AddPinPage() {
     );
   };
 
+  // Simple compression function using Canvas
+const compressImageWithCanvas = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target?.result as string;
+      
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+          reject(new Error("Canvas context not available"));
+          return;
+        }
+        
+        // Calculate new dimensions (maintain aspect ratio)
+        let width = img.width;
+        let height = img.height;
+        const MAX_SIZE = 1200; // Max width or height
+        
+        if (width > height && width > MAX_SIZE) {
+          height = Math.round((height * MAX_SIZE) / width);
+          width = MAX_SIZE;
+        } else if (height > MAX_SIZE) {
+          width = Math.round((width * MAX_SIZE) / height);
+          height = MAX_SIZE;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw image with new dimensions
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Check file type and set appropriate compression
+        let quality = 0.7; // 70% quality for JPEG
+        let mimeType = 'image/jpeg';
+        
+        if (file.type === 'image/png') {
+          mimeType = 'image/png';
+          quality = 0.8; // Slightly higher quality for PNG
+        } else if (file.type === 'image/webp') {
+          mimeType = 'image/webp';
+        }
+        
+        // Convert to base64 with compression
+        const compressedBase64 = canvas.toDataURL(mimeType, quality);
+        resolve(compressedBase64);
+      };
+      
+      img.onerror = () => reject(new Error("Failed to load image"));
+    };
+    
+    reader.onerror = () => reject(new Error("Failed to read file"));
+  });
+};
+
   const handleLogout = async () => {
     // Check if we're on client before using window.confirm
     if (typeof window !== 'undefined' && window.confirm("Are you sure you want to logout?")) {
@@ -122,29 +184,58 @@ export default function AddPinPage() {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    // Check file size (max 500KB for base64)
+  // Check file type
+  if (!file.type.startsWith("image/")) {
+    alert("Please upload an image file (JPEG, PNG, etc.)");
+    return;
+  }
+
+  setCompressing(true);
+
+  try {
+    // If file is larger than 500KB, compress it
     if (file.size > 500 * 1024) {
-      alert("Image too large! Max 500KB. Please compress the image.");
-      return;
+      console.log(`Original size: ${(file.size / 1024).toFixed(2)}KB`);
+      
+      const compressedBase64 = await compressImageWithCanvas(file);
+      
+      // Check the compressed size (base64 is about 33% larger than binary)
+      const base64Size = (compressedBase64.length * 3) / 4; // Approximate binary size
+      console.log(`Compressed size: ${(base64Size / 1024).toFixed(2)}KB`);
+      
+      if (base64Size > 550 * 1024) {
+        alert("Image compression failed to reduce size enough. Please select a smaller image.");
+        return;
+      }
+      
+      setPhotoData(compressedBase64);
+      
+      // Show success message for large files
+      if (file.size > 1024 * 1024) { // If original was > 1MB
+        const originalMB = (file.size / 1024 / 1024).toFixed(1);
+        const compressedKB = (base64Size / 1024).toFixed(1);
+        alert(`✓ Image compressed from ${originalMB}MB to ${compressedKB}KB`);
+      }
+    } else {
+      // For small files (<500KB), use original
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result as string;
+        setPhotoData(base64);
+      };
+      reader.readAsDataURL(file);
     }
-
-    // Check file type
-    if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file (JPEG, PNG, etc.)");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      setPhotoData(base64);
-    };
-    reader.readAsDataURL(file);
-  };
+  } catch (error) {
+    console.error("Error processing image:", error);
+    alert("Failed to process image. Please try again.");
+  } finally {
+    setCompressing(false);
+  }
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -216,13 +307,14 @@ export default function AddPinPage() {
   };
 
   const categories = [
-    { value: "recycling", label: "♻️ Recycling Center", color: "bg-green-100 text-green-800" },
-    { value: "green_space", label: "🌳 Green Space/Park", color: "bg-emerald-100 text-emerald-800" },
-    { value: "transport", label: "🚲 Sustainable Transport", color: "bg-blue-100 text-blue-800" },
-    { value: "water", label: "💧 Water Station", color: "bg-cyan-100 text-cyan-800" },
-    { value: "cleanup", label: "🧹 Clean-up Area", color: "bg-orange-100 text-orange-800" },
-    { value: "other", label: "📍 Other", color: "bg-gray-100 text-gray-800" },
-  ];
+  { value: "recycling", label: "♻️ Recycling Center", color: "bg-green-100 text-green-800" },
+  { value: "green_space", label: "🌳 Green Space/Park", color: "bg-emerald-100 text-emerald-800" },
+  { value: "transport", label: "🚲 Sustainable Transport", color: "bg-blue-100 text-blue-800" },
+  { value: "water", label: "💧 Water Station", color: "bg-cyan-100 text-cyan-800" },
+  { value: "pedestrian", label: "🚸 Pedestrian Lane", color: "bg-orange-100 text-orange-800" },
+  { value: "waste_segregation", label: "🗑️ Waste Segregation Bins", color: "bg-purple-100 text-purple-800" }, // DITO!
+  { value: "other", label: "📍 Other", color: "bg-gray-100 text-gray-800" },
+];
 
   if (loading) {
     return (
@@ -435,51 +527,72 @@ export default function AddPinPage() {
             )}
           </div>
 
-          {/* Photo Upload */}
-          <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">
-              Photo *
-              <span className="text-sm text-gray-500 font-normal ml-2">
-                (Max 500KB, helps others find the location)
-              </span>
-            </label>
-            
-            {!photoData ? (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-green-400 hover:bg-green-50 transition"
-              >
-                <Camera className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600 font-medium">Click to upload photo</p>
-                <p className="text-sm text-gray-500 mt-1">
-                  JPG, PNG (Max 500KB)
-                </p>
-              </div>
-            ) : (
-              <div className="relative">
-                <img
-                  src={photoData}
-                  alt="Preview"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <button
-                  type="button"
-                  onClick={() => setPhotoData("")}
-                  className="absolute top-3 right-3 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-            
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              ref={fileInputRef}
-              className="hidden"
-            />
-          </div>
+         {/* Photo Upload */}
+<div className="mb-6">
+  <label className="block text-gray-700 font-medium mb-2">
+    Photo *
+    <span className="text-sm text-gray-500 font-normal ml-2">
+      (Up to 5MB, auto-compressed to ~500KB)
+    </span>
+  </label>
+  
+  {!photoData ? (
+    <div
+      onClick={() => !compressing && fileInputRef.current?.click()}
+      className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition ${
+        compressing 
+          ? "border-gray-300 bg-gray-50 cursor-not-allowed" 
+          : "border-gray-300 hover:border-green-400 hover:bg-green-50"
+      }`}
+    >
+      {compressing ? (
+        <div className="flex flex-col items-center">
+          <div className="w-10 h-10 border-2 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="text-gray-600 font-medium">Compressing image...</p>
+          <p className="text-sm text-gray-500 mt-1">Please wait</p>
+        </div>
+      ) : (
+        <>
+          <Camera className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+          <p className="text-gray-600 font-medium">Click to upload photo</p>
+          <p className="text-sm text-gray-500 mt-1">
+            JPG, PNG (Up to 5MB, auto-compressed)
+          </p>
+        </>
+      )}
+    </div>
+  ) : (
+    <div className="relative">
+      <img
+        src={photoData}
+        alt="Preview"
+        className="w-full h-48 object-cover rounded-lg"
+      />
+      <button
+        type="button"
+        onClick={() => setPhotoData("")}
+        className="absolute top-3 right-3 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  )}
+  
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageUpload}
+    ref={fileInputRef}
+    className="hidden"
+  />
+  
+  {/* Compression info tip */}
+  <div className="mt-2 p-3 bg-blue-50 rounded-lg">
+    <p className="text-sm text-blue-700">
+      💡 <span className="font-medium">Automatic Compression:</span> Large images (over 500KB) will be automatically resized and optimized.
+    </p>
+  </div>
+</div>
 
           {/* Display Option Select */}
           <div className="mb-6">

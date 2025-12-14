@@ -113,7 +113,7 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full mb-4">
             <span className="text-2xl sm:text-3xl text-white">🌍</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Welcome Back</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Welcome</h1>
           <p className="text-gray-600 mt-2 text-sm sm:text-base">Sign in to your Eco-Map account</p>
         </div>
 

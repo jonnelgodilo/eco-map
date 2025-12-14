@@ -88,14 +88,53 @@ export default function DashboardPage() {
 
   // Calculate statistics
   const totalPins = pins.length;
-  const recyclingPins = pins.filter(p => p.category === "recycling").length;
-  const greenSpacePins = pins.filter(p => p.category === "green_space").length;
-  const transportPins = pins.filter(p => p.category === "transport").length;
   const uniqueContributors = Array.from(new Set(pins.map(p => p.userEmail))).length;
   
   // Get user's contributions
   const userPins = pins.filter(p => p.userEmail === user?.email);
   const userContributions = userPins.length;
+
+  // Calculate category counts
+  const categoryCounts: Record<string, number> = {};
+  pins.forEach(pin => {
+    // Extract base category name (remove emoji)
+    const category = pin.category.replace(/[\p{Emoji}\u200d]/gu, '').trim() || pin.category;
+    
+    // Group similar categories
+    let normalizedCategory = category.toLowerCase();
+    if (normalizedCategory.includes("recycling") || normalizedCategory.includes("♻️")) {
+      normalizedCategory = "Recycling";
+    } else if (normalizedCategory.includes("green") || normalizedCategory.includes("🌳") || normalizedCategory.includes("park")) {
+      normalizedCategory = "Green Space";
+    } else if (normalizedCategory.includes("transport") || normalizedCategory.includes("🚲")) {
+      normalizedCategory = "Transport";
+    } else if (normalizedCategory.includes("water") || normalizedCategory.includes("💧")) {
+      normalizedCategory = "Water";
+    } else if (normalizedCategory.includes("pedestrian") || normalizedCategory.includes("🚸")) {
+      normalizedCategory = "Pedestrian";
+    } else if (normalizedCategory.includes("waste") || normalizedCategory.includes("🗑️") || normalizedCategory.includes("segregation")) {
+      normalizedCategory = "Waste Segregation";
+    } else if (normalizedCategory.includes("clean") || normalizedCategory.includes("🧹")) {
+      normalizedCategory = "Clean-up";
+    } else {
+      normalizedCategory = category;
+    }
+    
+    categoryCounts[normalizedCategory] = (categoryCounts[normalizedCategory] || 0) + 1;
+  });
+
+  // Get top category (most pins)
+  let topCategory = { name: "None", count: 0 };
+  Object.entries(categoryCounts).forEach(([name, count]) => {
+    if (count > topCategory.count) {
+      topCategory = { name, count };
+    }
+  });
+
+  // Get categories with pins only (filter out zero)
+  const activeCategories = Object.entries(categoryCounts)
+    .filter(([_, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1]);
 
   if (loading) {
     return (
@@ -108,9 +147,78 @@ export default function DashboardPage() {
     );
   }
 
+  // Get category icon
+  const getCategoryIcon = (category: string) => {
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+      return "♻️";
+    } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+      return "🌳";
+    } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+      return "🚲";
+    } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+      return "💧";
+    } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+      return "🚸";
+    } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+      return "🗑️";
+    } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+      return "🧹";
+    } else {
+      return "📍";
+    }
+  };
+
+  // Get category color
+  const getCategoryColor = (category: string) => {
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+      return "bg-green-100 text-green-800";
+    } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+      return "bg-emerald-100 text-emerald-800";
+    } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+      return "bg-blue-100 text-blue-800";
+    } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+      return "bg-cyan-100 text-cyan-800";
+    } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+      return "bg-orange-100 text-orange-800";
+    } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+      return "bg-purple-100 text-purple-800";
+    } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+      return "bg-orange-100 text-orange-800";
+    } else {
+      return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Get category bar color
+  const getCategoryBarColor = (category: string) => {
+    const categoryLower = category.toLowerCase();
+    
+    if (categoryLower.includes("recycling") || categoryLower.includes("♻️")) {
+      return "bg-green-500";
+    } else if (categoryLower.includes("green") || categoryLower.includes("🌳") || categoryLower.includes("park")) {
+      return "bg-emerald-500";
+    } else if (categoryLower.includes("transport") || categoryLower.includes("🚲")) {
+      return "bg-blue-500";
+    } else if (categoryLower.includes("water") || categoryLower.includes("💧")) {
+      return "bg-cyan-500";
+    } else if (categoryLower.includes("pedestrian") || categoryLower.includes("🚸")) {
+      return "bg-orange-500";
+    } else if (categoryLower.includes("waste") || categoryLower.includes("🗑️") || categoryLower.includes("segregation")) {
+      return "bg-purple-500";
+    } else if (categoryLower.includes("clean") || categoryLower.includes("🧹")) {
+      return "bg-orange-500";
+    } else {
+      return "bg-gray-500";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation Bar - Updated to match other pages */}
+      {/* Navigation Bar */}
       <nav className="bg-white border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -128,36 +236,36 @@ export default function DashboardPage() {
             </div>
 
             {/* Navigation Links - Desktop */}
-<div className="hidden md:flex items-center space-x-6">
-  <Link
-    href="/dashboard"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <Home className="w-4 h-4 mr-1" />
-    Dashboard
-  </Link>
-  <Link
-    href="/map"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <Globe className="w-4 h-4 mr-1" />
-    Map
-  </Link>
-  <Link
-    href="/add-pin"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <PlusCircle className="w-4 h-4 mr-1" />
-    Add Pin
-  </Link>
-  <Link
-    href="/profile"
-    className="text-gray-700 hover:text-green-600 font-medium flex items-center"
-  >
-    <User className="w-4 h-4 mr-1" />
-    Profile
-  </Link>
-</div>
+            <div className="hidden md:flex items-center space-x-6">
+              <Link
+                href="/dashboard"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <Home className="w-4 h-4 mr-1" />
+                Dashboard
+              </Link>
+              <Link
+                href="/map"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <Globe className="w-4 h-4 mr-1" />
+                Map
+              </Link>
+              <Link
+                href="/add-pin"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <PlusCircle className="w-4 h-4 mr-1" />
+                Add Pin
+              </Link>
+              <Link
+                href="/profile"
+                className="text-gray-700 hover:text-green-600 font-medium flex items-center"
+              >
+                <User className="w-4 h-4 mr-1" />
+                Profile
+              </Link>
+            </div>
 
             {/* User Info */}
             <div className="flex items-center space-x-4">
@@ -224,7 +332,7 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Welcome Section - Improved */}
+        {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Welcome back, {user?.email?.split('@')[0] || "User"}!</h1>
           <p className="text-gray-600 mt-2">
@@ -232,8 +340,9 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        {/* Stats Grid - Simple with fixed colors */}
+        {/* Stats Grid - SIMPLIFIED: Total, Contributors, Your Pins, Top Category */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {/* Total Points */}
           <div className="bg-white border rounded-lg p-4">
             <div className="flex items-center">
               <div className="p-2 bg-blue-50 rounded-md mr-3">
@@ -246,6 +355,7 @@ export default function DashboardPage() {
             </div>
           </div>
           
+          {/* Contributors */}
           <div className="bg-white border rounded-lg p-4">
             <div className="flex items-center">
               <div className="p-2 bg-green-50 rounded-md mr-3">
@@ -258,18 +368,7 @@ export default function DashboardPage() {
             </div>
           </div>
           
-          <div className="bg-white border rounded-lg p-4">
-            <div className="flex items-center">
-              <div className="p-2 bg-emerald-50 rounded-md mr-3">
-                <span className="text-lg">♻️</span>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-900">{recyclingPins}</p>
-                <p className="text-sm text-gray-600">Recycling</p>
-              </div>
-            </div>
-          </div>
-          
+          {/* Your Pins */}
           <div className="bg-white border rounded-lg p-4">
             <div className="flex items-center">
               <div className="p-2 bg-purple-50 rounded-md mr-3">
@@ -281,12 +380,30 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+          
+          {/* Top Category */}
+          <div className="bg-white border rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="p-2 bg-orange-50 rounded-md mr-3">
+                <span className="text-lg">{getCategoryIcon(topCategory.name)}</span>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-900">{topCategory.count}</p>
+                <p className="text-sm text-gray-600 truncate">
+                  {topCategory.name === "None" ? "Most Popular" : topCategory.name}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Recent Pins Section - Removed View Map link */}
+        {/* Recent Community Pins - SHOW ONLY 3 */}
         <div className="bg-white border rounded-lg mb-8">
           <div className="px-6 py-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Community Pins</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-900">Recent Community Pins</h2>
+              <span className="text-sm text-gray-500">Latest 3</span>
+            </div>
           </div>
           
           <div className="p-6">
@@ -313,7 +430,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {pins.slice(0, 5).map((pin) => (
+                {pins.slice(0, 3).map((pin) => (
                   <div
                     key={pin.id}
                     className="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors cursor-pointer"
@@ -332,21 +449,15 @@ export default function DashboardPage() {
                       <div className="flex-1">
                         <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-2">
                           <h3 className="font-semibold text-gray-900 mb-1">{pin.title}</h3>
-                          <span className={`px-2 py-1 rounded text-xs font-medium self-start sm:self-auto ${
-                            pin.category === 'recycling' ? 'bg-green-100 text-green-800' :
-                            pin.category === 'green_space' ? 'bg-emerald-100 text-emerald-800' :
-                            'bg-blue-100 text-blue-800'
-                          }`}>
-                            {pin.category === 'recycling' ? '♻️ Recycling' :
-                             pin.category === 'green_space' ? '🌳 Green Space' :
-                             '🚲 Transport'}
+                          <span className={`px-3 py-1 rounded text-xs font-medium self-start sm:self-auto ${getCategoryColor(pin.category)}`}>
+                            {getCategoryIcon(pin.category)} {pin.category}
                           </span>
                         </div>
                         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{pin.description}</p>
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm">
                           <div className="flex items-center text-gray-500 mb-2 sm:mb-0">
                             <Mail className="w-4 h-4 mr-1" />
-                            <span>{pin.userEmail}</span>
+                            <span className="truncate">{pin.userEmail}</span>
                           </div>
                           <div className="flex items-center text-gray-500">
                             <Calendar className="w-4 h-4 mr-1" />
@@ -358,13 +469,13 @@ export default function DashboardPage() {
                   </div>
                 ))}
                 
-                {pins.length > 5 && (
+                {pins.length > 3 && (
                   <div className="pt-4 border-t">
                     <Link
                       href="/map"
                       className="block text-center text-green-600 hover:text-green-700 font-medium py-2"
                     >
-                      View all {pins.length} community pins →
+                      View all {pins.length} community pins on map →
                     </Link>
                   </div>
                 )}
@@ -373,124 +484,46 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Category Breakdown with fixed text colors */}
-        <div className="bg-white border rounded-lg mb-8">
-          <div className="px-6 py-4 border-b">
-            <h2 className="text-lg font-semibold text-gray-900">Category Breakdown</h2>
-          </div>
-          
-          <div className="p-6">
-            <div className="space-y-4">
-              {/* Recycling */}
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                    <span className="font-medium text-gray-900">Recycling Points</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">{recyclingPins} pins</span>
-                </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-green-500 rounded-full"
-                    style={{ width: `${(recyclingPins / Math.max(totalPins, 1)) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              {/* Green Spaces */}
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 bg-emerald-500 rounded-full mr-2"></div>
-                    <span className="font-medium text-gray-900">Green Spaces</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">{greenSpacePins} pins</span>
-                </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-emerald-500 rounded-full"
-                    style={{ width: `${(greenSpacePins / Math.max(totalPins, 1)) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-              
-              {/* Transport */}
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                    <span className="font-medium text-gray-900">Transport</span>
-                  </div>
-                  <span className="font-semibold text-gray-900">{transportPins} pins</span>
-                </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-blue-500 rounded-full"
-                    style={{ width: `${(transportPins / Math.max(totalPins, 1)) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
-              <div className="flex items-center">
-                <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-md mr-3">
-                  <Globe className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">SDG 11: Sustainable Cities</p>
-                  <p className="text-sm text-gray-600">This data supports UN Sustainable Development Goal 11</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Your Recent Contributions */}
-        {userContributions > 0 && (
-          <div className="bg-white border rounded-lg">
+        {/* Category Breakdown - SHOW ONLY ACTIVE CATEGORIES (with pins) */}
+        {activeCategories.length > 0 && (
+          <div className="bg-white border rounded-lg mb-8">
             <div className="px-6 py-4 border-b">
-              <h2 className="text-lg font-semibold text-gray-900">Your Recent Contributions</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Category Breakdown</h2>
+              <p className="text-sm text-gray-500 mt-1">Showing categories with active pins</p>
             </div>
             
             <div className="p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {userPins.slice(0, 3).map((pin) => (
-                  <div
-                    key={pin.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors cursor-pointer"
-                    onClick={() => router.push(`/map`)}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-gray-900 truncate">{pin.title}</h3>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                        pin.category === 'recycling' ? 'bg-green-100 text-green-800' :
-                        pin.category === 'green_space' ? 'bg-emerald-100 text-emerald-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}>
-                        {pin.category === 'recycling' ? '♻️' :
-                         pin.category === 'green_space' ? '🌳' : '🚲'}
-                      </span>
+              <div className="space-y-4">
+                {activeCategories.map(([categoryName, count]) => (
+                  <div key={categoryName}>
+                    <div className="flex justify-between items-center mb-1">
+                      <div className="flex items-center">
+                        <div className={`w-3 h-3 rounded-full mr-2 ${getCategoryBarColor(categoryName)}`}></div>
+                        <span className="font-medium text-gray-900">{categoryName}</span>
+                      </div>
+                      <span className="font-semibold text-gray-900">{count} pins</span>
                     </div>
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{pin.description}</p>
-                    <div className="text-xs text-gray-500">
-                      Added {new Date(pin.createdAt).toLocaleDateString()}
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full ${getCategoryBarColor(categoryName)}`}
+                        style={{ width: `${(count / totalPins) * 100}%` }}
+                      ></div>
                     </div>
                   </div>
                 ))}
               </div>
               
-              {userPins.length > 3 && (
-                <div className="mt-4 pt-4 border-t">
-                  <Link
-                    href="/profile"
-                    className="text-green-600 hover:text-green-700 font-medium text-sm"
-                  >
-                    View all your {userPins.length} contributions →
-                  </Link>
+              <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
+                <div className="flex items-center">
+                  <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-md mr-3">
+                    <Globe className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">SDG 11: Sustainable Cities</p>
+                    <p className="text-sm text-gray-600">This data supports UN Sustainable Development Goal 11</p>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )}
