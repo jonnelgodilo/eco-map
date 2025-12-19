@@ -56,23 +56,23 @@ npm run dev
 ```
 Open http://localhost:3000 in your browser
 
-🛠️ Technology Stack
-Frontend: Next.js 14 (App Router), React, TypeScript
+# 🛠️ Technology Stack
+- Frontend: Next.js 14 (App Router), React, TypeScript
 
-Styling: Tailwind CSS, globals.css
+- Styling: Tailwind CSS, globals.css
 
-Mapping: Leaflet.js, OpenStreetMap
+- Mapping: Leaflet.js, OpenStreetMap
 
-Backend: Firebase (Authentication, Firestore)
+- Backend: Firebase (Authentication, Firestore)
 
-Database: Firestore NoSQL Database
+- Database: Firestore NoSQL Database
 
-Hosting: Vercel
+- Hosting: Vercel
 
-Language: TypeScript
+- Language: TypeScript
 
-📁 Project Structure
-
+# 📁 Project Structure
+```
 eco-map/
 ├── app/                      # Next.js App Router Pages
 │   ├── add-pin/             # Add new sustainability pin page
@@ -100,12 +100,12 @@ eco-map/
 ├── postcss.config.js        # PostCSS configuration
 ├── tailwind.config.js       # Tailwind CSS configuration
 └── tsconfig.json            # TypeScript configuration
+```
+# 👥 Team Members
+**Jonnel A. Godilo**
 
-👥 Team Members
-Jonnel A. Godilo
+**Jenny D. Gipa**
 
-Jenny D. Gipa
+**Alliah Joy C. Besa**
 
-Alliah Joy C. Besa
-
-Mavel B. Maraño
+**Mavel B. Maraño**
