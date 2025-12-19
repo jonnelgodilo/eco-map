@@ -2,10 +2,10 @@
 
 Live Demo: https://eco-mapph.vercel.app
 
-# 📱 Project Overview
+## 📱 Project Overview
 A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collaboratively document and discover sustainability resources. This platform enables digital "bayanihan" where locals can map eco-friendly spots, share environmental initiatives, and build a guide to sustainable living.
 
-# ✨ Features
+## ✨ Features
 - **🗺️ Interactive Map** - Crowdsourced sustainability locations in Bulan
 
 - **📍 Pin Contribution** - Add water stations, eco-stores, green spaces
@@ -18,9 +18,9 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 - **🎯 SDG 11 Alignment** - Supports Sustainable Cities goal
 
-# 🚀 Getting Started
+## 🚀 Getting Started
 
-# Prerequisites
+## Prerequisites
 
 Node.js
 
@@ -28,19 +28,19 @@ npm, yarn, pnpm, or bun
 
 Firebase account for backend services
 
-# Installation
+## Installation
 
-# 1. Clone the repository:
+### 1. Clone the repository:
 ```
 git clone https://github.com/jonnelgodilo/eco-map.git
 cd eco-map
 ```
 
-# 2. Install dependencies:
+### 2. Install dependencies:
 ```
 npm install
 ```
-# 3. Set up Firebase:
+### 3. Set up Firebase:
 
 - Create a Firebase project at https://firebase.google.com
 
@@ -50,13 +50,13 @@ npm install
 
 - Add your Firebase config to .env.local
 
-# 4. Run the development server:
+### 4. Run the development server:
 ```
 npm run dev
 ```
 Open http://localhost:3000 in your browser
 
-# 🛠️ Technology Stack
+### 🛠️ Technology Stack
 - Frontend: Next.js 14 (App Router), React, TypeScript
 
 - Styling: Tailwind CSS, globals.css
@@ -71,7 +71,7 @@ Open http://localhost:3000 in your browser
 
 - Language: TypeScript
 
-# 📁 Project Structure
+## 📁 Project Structure
 ```
 eco-map/
 ├── app/                      # Next.js App Router Pages
@@ -101,7 +101,7 @@ eco-map/
 ├── tailwind.config.js       # Tailwind CSS configuration
 └── tsconfig.json            # TypeScript configuration
 ```
-# 👥 Team Members
+## 👥 Team Members
 **Jonnel A. Godilo**
 
 **Jenny D. Gipa**
