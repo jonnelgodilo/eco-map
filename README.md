@@ -7,7 +7,7 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 ## ✨ Features
 - **🗺️ Interactive Map** - Crowdsourced sustainability locations in Bulan
-- **📍 Pin Contribution** - Add water stations, eco-stores, green spaces
+- **📍 Pin Contribution** - Add recycling center, green space, transport, water station
 - **👤 User Profiles** - Track contributions & achievements
 - **📊 Sustainability Dashboard** - Real-time statistics
 - **🔐 User Authentication** - Secure login and registration
