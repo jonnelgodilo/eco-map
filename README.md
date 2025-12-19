@@ -22,11 +22,11 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 ## Prerequisites
 
-Node.js
+- Node.js
 
-npm, yarn, pnpm, or bun
+- npm, yarn, pnpm, or bun
 
-Firebase account for backend services
+- Firebase account for backend services
 
 ## Installation
 
