@@ -5,53 +5,55 @@ Live Demo: https://eco-mapph.vercel.app
 # 📱 Project Overview
 A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collaboratively document and discover sustainability resources. This platform enables digital "bayanihan" where locals can map eco-friendly spots, share environmental initiatives, and build a guide to sustainable living.
 
-✨ Features
-🗺️ Interactive Map - Crowdsourced sustainability locations in Bulan
+# ✨ Features
+- **🗺️ Interactive Map** - Crowdsourced sustainability locations in Bulan
 
-📍 Pin Contribution - Add water stations, eco-stores, green spaces
+- **📍 Pin Contribution** - Add water stations, eco-stores, green spaces
 
-👤 User Profiles - Track contributions & achievements
+- **👤 User Profiles** - Track contributions & achievements
 
-📊 Sustainability Dashboard - Real-time statistics
+- **📊 Sustainability Dashboard** - Real-time statistics
 
-🔐 User Authentication - Secure login and registration
+- **🔐 User Authentication** - Secure login and registration
 
-🎯 SDG 11 Alignment - Supports Sustainable Cities goal
+- **🎯 SDG 11 Alignment** - Supports Sustainable Cities goal
 
-🚀 Getting Started <a id="features"></a>
-Prerequisites
+# 🚀 Getting Started
 
-```bashNode.js
+# Prerequisites
+
+Node.js
 
 npm, yarn, pnpm, or bun
 
 Firebase account for backend services
+
+# Installation
+
+# 1. Clone the repository:
 ```
-
-Installation
-Clone the repository:
-
 git clone https://github.com/jonnelgodilo/eco-map.git
 cd eco-map
+```
 
-Install dependencies:
-
+# 2. Install dependencies:
+```
 npm install
+```
+# 3. Set up Firebase:
 
-Set up Firebase:
+- Create a Firebase project at https://firebase.google.com
 
-Create a Firebase project at https://firebase.google.com
+- Enable Authentication (Email/Password)
 
-Enable Authentication (Email/Password)
+- Create a Firestore Database
 
-Create a Firestore Database
+- Add your Firebase config to .env.local
 
-Add your Firebase config to .env.local
-
-Run the development server:
-
+# 4. Run the development server:
+```
 npm run dev
-
+```
 Open http://localhost:3000 in your browser
 
 🛠️ Technology Stack
