@@ -1,10 +1,10 @@
-🌍 ECO-MAP: Bulan, Sorsogon Sustainability Mapping Platform
+🌍 ECO-MAP: Bulan, Sorsogon Sustainability Mapping Platform <a id="features"></a>
 Live Demo: https://eco-mapph.vercel.app
 
-📱 Project Overview
+📱 Project Overview <a id="features"></a>
 A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collaboratively document and discover sustainability resources. This platform enables digital "bayanihan" where locals can map eco-friendly spots, share environmental initiatives, and build a guide to sustainable living.
 
-✨ Features
+✨ Features <a id="features"></a>
 🗺️ Interactive Map - Crowdsourced sustainability locations in Bulan
 
 📍 Pin Contribution - Add water stations, eco-stores, green spaces
@@ -17,13 +17,15 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 🎯 SDG 11 Alignment - Supports Sustainable Cities goal
 
-🚀 Getting Started
+🚀 Getting Started <a id="features"></a>
 Prerequisites
-Node.js
+
+```bashNode.js
 
 npm, yarn, pnpm, or bun
 
 Firebase account for backend services
+```
 
 Installation
 Clone the repository:
