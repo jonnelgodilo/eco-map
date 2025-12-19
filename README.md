@@ -86,7 +86,7 @@ eco-map/
 └── tsconfig.json            # TypeScript configuration
 ```
 ## 👥 Team Members
--**Jonnel A. Godilo** Email: jonnel.godilo@sorsu.edu.ph
--**Jenny D. Gipa** Email: jennygipa750@gmail.com
--**Alliah Joy C. Besa** Email: alliahjoybesa687@gmail.com
--**Mavel B. Maraño** Email: mavelmarano607@gmail.com  
+- **Jonnel A. Godilo** Email: jonnel.godilo@sorsu.edu.ph
+- **Jenny D. Gipa** Email: jennygipa750@gmail.com
+- **Alliah Joy C. Besa** Email: alliahjoybesa687@gmail.com
+- **Mavel B. Maraño** Email: mavelmarano607@gmail.com  
