@@ -7,15 +7,10 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 ## ✨ Features
 - **🗺️ Interactive Map** - Crowdsourced sustainability locations in Bulan
-
 - **📍 Pin Contribution** - Add water stations, eco-stores, green spaces
-
 - **👤 User Profiles** - Track contributions & achievements
-
 - **📊 Sustainability Dashboard** - Real-time statistics
-
 - **🔐 User Authentication** - Secure login and registration
-
 - **🎯 SDG 11 Alignment** - Supports Sustainable Cities goal
 
 ## 🚀 Getting Started
@@ -23,9 +18,7 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 ### Prerequisites
 
 - Node.js
-
 - npm, yarn, pnpm, or bun
-
 - Firebase account for backend services
 
 ### Installation
@@ -43,11 +36,8 @@ npm install
 ### 3. Set up Firebase:
 
 - Create a Firebase project at https://firebase.google.com
-
 - Enable Authentication (Email/Password)
-
 - Create a Firestore Database
-
 - Add your Firebase config to .env.local
 
 ### 4. Run the development server:
@@ -56,19 +46,13 @@ npm run dev
 ```
 Open http://localhost:3000 in your browser
 
-### 🛠️ Technology Stack
+## 🛠️ Technology Stack
 - Frontend: Next.js 14 (App Router), React, TypeScript
-
 - Styling: Tailwind CSS, globals.css
-
 - Mapping: Leaflet.js, OpenStreetMap
-
 - Backend: Firebase (Authentication, Firestore)
-
 - Database: Firestore NoSQL Database
-
 - Hosting: Vercel
-
 - Language: TypeScript
 
 ## 📁 Project Structure
@@ -103,9 +87,6 @@ eco-map/
 ```
 ## 👥 Team Members
 **Jonnel A. Godilo**
-
 **Jenny D. Gipa**
-
 **Alliah Joy C. Besa**
-
 **Mavel B. Maraño**
