@@ -20,7 +20,7 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 ## 🚀 Getting Started
 
-## Prerequisites
+### Prerequisites
 
 - Node.js
 
@@ -28,7 +28,7 @@ A hyperlocal community mapping tool for residents of Bulan, Sorsogon to collabor
 
 - Firebase account for backend services
 
-## Installation
+### Installation
 
 ### 1. Clone the repository:
 ```
