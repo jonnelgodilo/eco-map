@@ -1,4 +1,4 @@
-🌍 ECO-MAP: Bulan, Sorsogon Sustainability Mapping Platform <a id="features"></a>
+##🌍 ECO-MAP: Bulan, Sorsogon Sustainability Mapping Platform <a id="features"></a>
 Live Demo: https://eco-mapph.vercel.app
 
 📱 Project Overview <a id="features"></a>
